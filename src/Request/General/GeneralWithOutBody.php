@@ -24,15 +24,16 @@ class GeneralWithOutBody
         if ($apiConfig->getAppKey() == "") throw new Exception("Input of [app_key] is empty");
         if ($apiConfig->getSecretKey() == "") throw new Exception("Input of [secret_key] is empty");
         if ($apiConfig->getAccessToken() == "") throw new Exception("Input of [access_token] is empty");
-        if($apiPath != "/api/shop/get_authorized_shop")
-        {
-            if ($apiConfig->getShopId() == "") throw new Exception("Input of [shop_id] is empty");
-        }
+        // if($apiPath != "/api/shop/get_authorized_shop")
+        // {
+        //     if ($apiConfig->getShopId() == "") throw new Exception("Input of [shop_id] is empty");
+        // }
 
         //Timestamp
         $timeStamp = time();
         $params["timestamp"] = $timeStamp;
         $params["app_key"] = $apiConfig->getAppKey();
+        if (!empty($apiConfig->getShopCipher())) $params["shop_cipher"] = urlencode($apiConfig->getShopCipher());
 
         $signedKey = SignGenerator::generateSign($apiPath, $apiConfig->getSecretKey(), $params);
 
@@ -57,7 +58,12 @@ class GeneralWithOutBody
 
         try
         {
-            $response = json_decode($guzzleClient->request($httpMethod, $requestUrl)->getBody()->getContents());
+            $headers = [
+                'headers' => [
+                    'x-tts-access-token' => $apiConfig->getAccessToken()
+                ]
+            ];
+            $response = json_decode($guzzleClient->request($httpMethod, $requestUrl,$headers)->getBody()->getContents());
         }
         catch (\GuzzleHttp\Exception\ClientException $e)
         {

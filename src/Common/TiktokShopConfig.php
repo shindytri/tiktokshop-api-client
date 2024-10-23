@@ -16,6 +16,7 @@ class TiktokShopConfig
     private $refreshToken;
     private $shopId;
     private $secretKey;
+    private $shopCipher;
     private $timeOut;
 
     /**
@@ -24,15 +25,17 @@ class TiktokShopConfig
      * @param string $accessToken
      * @param string $shopId
      * @param string $secretKey
+     * @param string @shopCipher
      * @param int $timeOut
      */
-    public function __construct($appKey = "", $accessToken = "", $refreshToken = "", $shopId = "", $secretKey = "", $timeOut = 3)
+    public function __construct($appKey = "", $accessToken = "", $refreshToken = "", $shopId = "", $secretKey = "", $shopCipher = "", $timeOut = 3)
     {
         $this->appKey = $appKey;
         $this->accessToken = $accessToken;
         $this->refreshToken = $refreshToken;
         $this->shopId = $shopId;
         $this->secretKey = $secretKey;
+        $this->shopCipher = $shopCipher;
         $this->timeOut = $timeOut;
     }
 
@@ -117,6 +120,22 @@ class TiktokShopConfig
     public function setSecretKey($secretKey)
     {
         $this->secretKey = $secretKey;
+    }
+
+    /**
+     * @return string
+     */
+    public function getShopCipher()
+    {
+        return $this->shopCipher;
+    }
+
+    /**
+     * @param string $shopCipher
+     */
+    public function setShopCipher($shopCipher)
+    {
+        $this->shopCipher = $shopCipher;
     }
 
     /**
