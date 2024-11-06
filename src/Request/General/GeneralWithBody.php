@@ -29,6 +29,7 @@ class GeneralWithBody
         $timeStamp = time();
         $params["timestamp"] = $timeStamp;
         $params["app_key"] = $apiConfig->getAppKey();
+        if (!empty($apiConfig->getShopCipher())) $params["shop_cipher"] = urlencode($apiConfig->getShopCipher());
 
         $signedKey = SignGenerator::generateSign($apiPath, $apiConfig->getSecretKey(), $params);
 
@@ -55,7 +56,13 @@ class GeneralWithBody
 
         try
         {
-            $response = json_decode($guzzleClient->request($httpMethod, $requestUrl, ['json' => $body])->getBody()->getContents());
+            $headers = [
+                'headers' => [
+                    'x-tts-access-token' => $apiConfig->getAccessToken()
+                ],
+                'json' => $body
+            ];
+            $response = json_decode($guzzleClient->request($httpMethod, $requestUrl, $headers)->getBody()->getContents());
         }
         catch (\GuzzleHttp\Exception\ClientException $e)
         {
