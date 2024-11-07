@@ -4,7 +4,7 @@ namespace Aftwork\TiktokShop\Common;
 
 class SignGenerator
 {
-    public static function generateSign($apiPathName, $appSecret, &$params)
+    public static function generateSign($apiPathName, $appSecret, &$params, $body = null)
     {
         $paramsToBeSigned = $params;
         $stringToBeSigned = '';
@@ -23,10 +23,13 @@ class SignGenerator
         // 3. Append the request path to the beginning
         $stringToBeSigned = $apiPathName . $stringToBeSigned;
 
-        // 4. Wrap string generated in step 3 with app_secret.
+        // 4. Push request body if multipart/form-data, push request body to string
+        if (!is_null($body) && !empty($body)) $stringToBeSigned = $stringToBeSigned . json_encode($body);
+
+        // 5. Wrap string generated in step 3 with app_secret.
         $stringToBeSigned = $appSecret . $stringToBeSigned . $appSecret;
 
-        // 7. Use sha256 to generate sign with salt(secret).
+        // 6. Use sha256 to generate sign with salt(secret).
         return hash_hmac('sha256', $stringToBeSigned, $appSecret);
     }
 }
